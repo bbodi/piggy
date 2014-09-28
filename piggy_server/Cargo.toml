@@ -1,0 +1,9 @@
+[package]
+
+name = "piggy_server"
+version = "0.0.1"
+authors = ["bbodi <bodidev@gmail.com>"]
+
+[dependencies.postgres]
+
+git = "https://github.com/sfackler/rust-postgres.git" 

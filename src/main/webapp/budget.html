@@ -1,0 +1,729 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <link rel="icon" href="../../favicon.ico"/>
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet"/>
+    <!-- Custom styles for this template -->
+    <link href="dashboard.css" rel="stylesheet"/>
+    <!--    <script type='text/javascript' src="http://zeptojs.com/zepto.js">
+    </script>-->
+    <script type='text/javascript' src="http://code.jquery.com/jquery-2.1.1.min.js">
+    </script>
+    <script type='text/javascript' src="http://knockoutjs.com/downloads/knockout-3.1.0.js">
+    </script>
+    <script type='text/javascript' src="js/bootstrap.min.js">
+    </script>
+    <script type='text/javascript' src="locale_hu.js">
+    </script>
+    <script type='text/javascript' src="common.js">
+    </script>
+    <script type='text/javascript' src="budget.js">
+    </script>
+    <title>Dashboard Template for Bootstrap</title>
+
+</head>
+
+<body>
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar">
+
+          </span>
+          <span class="icon-bar">
+
+          </span>
+          <span class="icon-bar">
+
+          </span>
+            </button>
+            <a class="navbar-brand" href="#" data-bind="text: username"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#">Dashboard</a>
+                </li>
+                <li>
+                    <a href="#">Settings</a>
+                </li>
+                <li>
+                    <a href="#">Profile</a>
+                </li>
+                <li>
+                    <a href="#" data-bind="click: logout">Logout</a>
+                </li>
+            </ul>
+            <form class="navbar-form navbar-right">
+                <input type="text" class="form-control" placeholder="Search..."/>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+<div class="row">
+<!--<div class="col-sm-3 col-md-2 sidebar">-->
+<!--<ul class="nav nav-sidebar">-->
+<!--<li class="active">-->
+<!--<a href="#">Havi tervezés</a>-->
+<!--</li>-->
+<!--<li>-->
+<!--<a href="#">Pénzforgalom</a>-->
+<!--</li>-->
+<!--<li>-->
+<!--<a href="#">Analytics</a>-->
+<!--</li>-->
+<!--<li>-->
+<!--<a href="#">Export</a>-->
+<!--</li>-->
+<!--</ul>-->
+<!--<ul class="nav nav-sidebar">-->
+<!--<li>-->
+<!--<a href="">Nav item</a>-->
+<!--</li>-->
+<!--<li>-->
+<!--<a href="">Nav item again</a>-->
+<!--</li>-->
+<!--<li>-->
+<!--<a href="">One more nav</a>-->
+<!--</li>-->
+<!--<li>-->
+<!--<a href="">Another nav item</a>-->
+<!--</li>-->
+<!--<li>-->
+<!--<a href="">More navigation</a>-->
+<!--</li>-->
+<!--</ul>-->
+<!--<ul class="nav nav-sidebar">-->
+<!--<li>-->
+<!--<a href="">Nav item again</a>-->
+<!--</li>-->
+<!--<li>-->
+<!--<a href="">One more nav</a>-->
+<!--</li>-->
+<!--<li>-->
+<!--<a href="">Another nav item</a>-->
+<!--</li>-->
+<!--</ul>-->
+<!--</div>-->
+<div class="col-sm-9 col-sm-offset-2 col-md-10 col-md-offset-1 main">
+<h1 class="page-header">Dashboard</h1>
+
+<div class="table-responsive row">
+<table class="table table-bordered table-hover table-condensed ">
+    <thead>
+    <tr>
+        <th class="text-center">
+            <button type="button" class="btn btn-primary"
+                    data-bind="click: add_new_place">
+                <span class="glyphicon glyphicon-plus"></span>
+            </button>
+            Hely
+        </th>
+        <th class="text-center">Tervezhető</th>
+        <th class="text-center">Összes</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- ko foreach: places -->
+    <tr>
+        <td>
+            <div class="dropdown" data-bind="">
+                <a data-toggle="dropdown" href="#" data-bind="text: name"></a>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#"
+                                               data-bind="click: delete_me">Törlés</a>
+                    </li>
+                </ul>
+            </div>
+
+
+            <input type="text" class="form-control" data-bind="visible: editing, value: editingBackend.name"/>
+            <button class="btn btn-success"
+                    data-bind="visible: editing,
+                    click: commitEditing"><span
+                    class="glyphicon glyphicon-ok"></span></button>
+            <button class="btn btn-warning"
+                    data-bind="visible: editing,
+                    click: rollbackEditing"><span
+                    class="glyphicon glyphicon-remove"></span></button>
+        </td>
+        <td>
+            <p class="text-right" data-bind="numericText: myValue"></p>
+        </td>
+        <td>
+            <p class="text-right" data-bind="numericText: sumValue"></p>
+        </td>
+    </tr>
+    <!-- /ko -->
+    </tbody>
+</table>
+
+
+<!-- ============================================== -->
+<!-- PERSELYEK képek -->
+<!-- ============================================== -->
+<div class="row">
+    <div data-bind='foreach: perselyek'>
+        <div class="col-xs-6 col-sm-2 placeholders">
+            <canvas style="cursor: pointer;"
+                    data-bind="click: edit,
+                    attr: {percent: currentValuePercent, width: $root.PERSELY_IMG_W, height: $root.PERSELY_IMG_H,
+                        src: img_link}"
+                    class="perselyImg">
+            </canvas>
+            <div style="cursor: pointer;" data-bind="visible: !editing(), click: edit">
+                <h3 data-bind="text: name">
+
+                </h3>
+                  <span class="label label-success" data-bind="text: place().name()">
+
+                </span>
+                <h4 data-bind="numericText: currentValue">
+
+                </h4>
+                  <span class="text-muted" data-bind="numericText: goal_value">
+
+                </span>
+            </div>
+            <!-- ============================================== -->
+            <!-- Persely FORM -->
+            <!-- ============================================== -->
+            <div data-bind="visible: editing">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Név</label>
+
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" data-bind="value: editingBackend.name"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Cél összeg</label>
+
+                        <div class="col-sm-10">
+                            <input type="number" class="form-control" data-bind="value: editingBackend.goal_value"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Hely</label>
+
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" data-bind="value: editingBackend.place_name"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Kép link</label>
+
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" data-bind="value: editingBackend.img_link"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10 btn-group">
+                            <button class="btn btn-default" data-bind="click: save">Mentés</button>
+                            <button class="btn btn-default" data-bind="click: edit">Mégse</button>
+                            <button type="button" class="btn btn-danger"
+                                    data-bind="click: $root.deletePersely.bind($root, $data)">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- ============================================== -->
+    <!-- ÚJ PERSELY -->
+    <!-- ============================================== -->
+    <div data-bind="with: newPersely">
+        <div class="col-xs-6 col-sm-2 placeholders">
+            <br/>
+            <br/>
+            <button type="button" class="btn btn-success" data-bind="visible: !editing(), click: edit">Új hozzáadása
+            </button>
+            <!-- ============================================== -->
+            <!-- ÚJ Persely FORM -->
+            <!-- ============================================== -->
+            <div data-bind="visible: editing">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Név</label>
+
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" data-bind="value: editingBackend.name"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Cél összeg</label>
+
+                        <div class="col-sm-10">
+                            <input type="number" class="form-control" data-bind="value: editingBackend.goal_value"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Hely</label>
+
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" data-bind="value: editingBackend.place_name"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10 btn-group">
+                            <button class="btn btn-default" data-bind="click: $root.saveNewPersely.bind($root)">Mentés
+                            </button>
+                            <button class="btn btn-default" data-bind="click: edit">Mégse</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<hr/>
+<!-- ============================================== -->
+<!-- Év választó, HÓNAPOK, HÓNAPDARABSZÁM -->
+<!-- ============================================== -->
+<div class="row">
+    <!-- ============================================== -->
+    <!-- Év választó -->
+    <!-- ============================================== -->
+    <div class="btn-group">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                <span data-bind="text: selectedBudgetYear()">
+
+              </span>
+                <span class="caret">
+
+              </span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+            <li>
+                <a data-bind="click: selectBudgetYear.bind($data, 2014)">2014</a>
+            </li>
+            <li>
+                <a data-bind="click: selectBudgetYear.bind($data, 2015)">2015</a>
+            </li>
+            <li>
+                <a data-bind="click: selectBudgetYear.bind($data, 2016)">2016</a>
+            </li>
+        </ul>
+    </div>
+    <!-- ============================================== -->
+    <!-- JANUÁR - DECEMBER BUTTON GROUP -->
+    <!-- ============================================== -->
+    <div class="btn-group" data-toggle="buttons" data-bind="foreach: monthNames">
+        <label class="btn btn-primary"
+               data-bind="css: {active: $index() == $parent.selectedBudgetMonthNullBasedIndex(), 'btn-info': $index() == $parent.currentBudgetMonthNullBasedIndex()},                                  click: $parent.selectBudgetMonth.bind($root, $index())">
+            <input type="radio" name="options" data-bind="value: $index()">
+                <span data-bind="text: $data">
+
+                </span>
+            </input>
+        </label>
+    </div>
+</div>
+<!-- ============================================== -->
+<!-- Budgets -->
+<!-- ============================================== -->
+<div class="row" data-bind="foreach: budgetMonths">
+    <div class="col-md-4 well">
+        <table class="table table-bordered table-hover table-condensed">
+            <thead></thead>
+            <tbody>
+            <tr>
+                <td>
+                    <p class="text-right" data-bind="numericText: not_budgeted_in_prev_month"></p>
+                </td>
+                <td>
+                    Maradék
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p class="text-right" data-bind="numericText: overspending_in_prev_month"></p>
+                </td>
+                <td>
+                    Túlköltekezés
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p class="text-right" data-bind="numericText: income"></p>
+                </td>
+                <td>
+                    Bevétel
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p class="text-right" data-bind="numericText: budgeted"></p>
+                </td>
+                <td>
+                    Tervezett
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <h2>
+                        <!--data-bind="numericText: availableToBudget"-->
+                        <p data-bind="numericText: available_to_budget" class="text-muted text-center">200</p>
+                    </h2>
+                    <p class="text-muted text-center">Tervezhető</p>
+                </td>
+            </tr>
+
+            </tbody>
+        </table>
+        <!-- ko foreach: budgetEntrySections -->
+        <div class="table-responsive">
+            <!-- original: #f5f5f5, border: 1px solid #e3e3e3 -->
+            <table class="table table-bordered table-hover table-condensed ">
+                <thead>
+                <tr>
+                    <th>
+                        <div class="row">
+                            <button class="btn btn-default glyphicon glyphicon-plus"
+                                    data-bind="click: $parent.begin_budget_entry_editing.bind($parent, $index())"></button>
+                            <button type="button" class="btn btn-sm btn-default" data-bind="css: {'btn-info': ($parent.month()-1) == $root.currentBudgetMonthNullBasedIndex()},
+								click: $root.openTransactionsForBudget.bind($root, $parent)">
+                                <span data-bind="text: $parent.year"></span>
+                                <span data-bind="text: $parent.month()"></span>
+                                <span class="glyphicon glyphicon-th-list"></span>
+                            </button>
+                            <span class="badge alert-danger" data-toggle="tooltip"
+                                  data-bind="visible: $root.has_alerted_tx($parent)"
+                                  title="A hónapban hibás tranzakciók vannak!">!</span>
+                            <span class="badge alert-success" data-bind="visible: $index() == 0">Gyűjtés</span>
+                            <span class="badge alert-danger" data-bind="visible: $index() == 1">Költés</span>
+                            <span class="badge" data-bind="visible: $index() == 2">Átmeneti</span>
+                        </div>
+                    </th>
+                    <th class="text-center">Tervezett</th>
+                    <th class="text-center">Ráfordított</th>
+                    <th class="text-center">Mérleg</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!--ko foreach: $data -->
+                <tr data-bind="css: {'alert danger': balance() < 0, 'alert warning': remainingPercent() < 25, 'alert success': is_full}">
+
+                    <td>
+                        <!--<strong><span data-bind="text: budgeted_to, click: beginEditing"></span></strong>-->
+                        <div class="dropdown" data-bind="">
+                            <a data-toggle="dropdown" href="#" data-bind="text: budgeted_to"></a>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#"
+                                                           data-bind="click: $root.openTransactionsForBudgetEntryAddNew.bind($root, $data, $parentContext.$index())">Hozzáadás</a>
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#"
+                                                           data-bind="click: beginEditing.bind($data, $parentContext.$index())">Szerkesztés</a>
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#"
+                                                           data-bind="click: $root.openTransactionsForBudgetEntry.bind($root, $data)">Összesítés</a>
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#"
+                                                           data-bind="click: make_balance_zero">Egyenleg kinullázása</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </td>
+                    <td>
+                            <span class="pull-right"
+                                  data-bind="numericText: budgeted"></span>
+                    </td>
+                    <td>
+                            <span class="pull-right"
+                                  data-bind="numericText: spent"></span>
+                    </td>
+                    <td>
+                            <span class="pull-right"
+                                  data-bind="numericText: balance()"></span>
+                    </td>
+                </tr>
+                <!-- /ko -->
+
+                </tbody>
+            </table>
+        </div>
+        <!-- /ko -->
+    </div>
+</div>
+<!-- ============================================== -->
+<!-- END Budgets -->
+<!-- ============================================== -->
+</div>
+</div>
+</div>
+
+<div id="budget_entry_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
+     aria-hidden="true" data-bind="if: $root.editingBudgetEntry() != null">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+            </div>
+            <div class="modal-body">
+                <form role="form">
+                    <div class="form-group">
+                        <label for="name">Név</label>
+                        <input type="text" class="form-control fo" id="name"
+                               data-bind="value: $root.editingBudgetEntry().editingBackend.budgeted_to">
+                    </div>
+                    <div class="form-group">
+                        <label for="type">Típus</label>
+                        <select id="type" data-bind="value: $root.editingBudgetEntry().editingBackend.planning_type">
+                            <option value="0">Költés</option>
+                            <option value="1">Gyűjtés</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="budgeted">Összeg</label>
+                        <input type="number" class="form-control" id="budgeted"
+                               data-bind="value: $root.editingBudgetEntry().editingBackend.budgeted">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="btn-group">
+                    <button class="btn btn-success"
+                            data-bind="click: $root.editingBudgetEntry().commitEditing.bind($root.editingBudgetEntry())"><span
+                            class="glyphicon glyphicon-ok"></span></button>
+                    <button class="btn btn-warning"
+                            data-bind="click: $root.editingBudgetEntry().rollbackEditing.bind($root.editingBudgetEntry())"><span
+                            class="glyphicon glyphicon-remove"></span></button>
+                    <button class="btn btn-danger"
+                            data-bind="visible: $root.editingBudgetEntry().id() != 0,
+                             click: $root.editingBudgetEntry().delete.bind($root.editingBudgetEntry())"><span
+                            class="glyphicon glyphicon-trash"></span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="transactionsModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+     aria-hidden="true">
+<div class="modal-dialog modal-lg">
+<div class="modal-content" style="width: 1400px;margin-left: -350px">
+
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
+            class="sr-only">Close</span>
+    </button>
+    <h4 class="modal-title" id="myModalLabel">Tranzakciók</h4>
+
+    <form class="form-inline well" role="form">
+        <div class="row">
+            <div class="form-group col-md-2">
+                <label class="control-label" for="src_filter">Forrás</label>
+                <input type="text" class="form-control" id="src_filter" placeholder="Forrás"
+                       data-bind="value: $root.transaction_filter.src">
+            </div>
+            <div class="form-group col-md-2">
+                <label class="control-label" for="tx_type_filter">Típus</label>
+                <select class="form-control" id="tx_type_filter"
+                        data-bind="value: $root.transaction_filter.tx_type">
+                    <option value="3">Mind</option>
+                    <option value="0">Költés</option>
+                    <option value="1">Átcsoportosítás</option>
+                    <option value="2">Rejtett Átcsoportosítás</option>
+                </select>
+            </div>
+
+            <div class="form-group col-md-2">
+                <label class="col-md-1 control-label" for="dst_filter">Cél</label>
+                <input type="text" class="form-control" id="dst_filter" placeholder="Cél"
+                       data-bind="value: $root.transaction_filter.dst">
+            </div>
+            <div class="form-group col-md-2">
+                <label class="control-label" for="descr_filter">Leírás</label>
+                <input type="text" class="form-control" id="descr_filter" placeholder="Leírás"
+                       data-bind="value: $root.transaction_filter.descr">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-2">
+                <label for="exampleInputEmail2">Összeg</label>
+
+                <div class="input-group">
+                    <input type="text" class="form-control" id="tx_from_value_filter"
+                           placeholder="Min. összeg" data-bind="value: $root.transaction_filter.from_value">
+
+                    <div class="input-group-addon"> -</div>
+
+                    <input class="form-control" type="text" placeholder="Max. összeg"
+                           id="tx_to_value_filter" data-bind="value: $root.transaction_filter.to_value">
+                </div>
+            </div>
+
+
+            <div class="form-group col-md-2">
+                <label for="exampleInputEmail2">Dátum</label>
+
+                <div class="input-group">
+                    <input type="date" class="form-control col-md-1" id="tx_from_date_filter"
+                           placeholder="-tól" data-bind="value: $root.transaction_filter.from_date_str">
+
+                    <div class="input-group-addon"> -</div>
+
+                    <input class="form-control col-md-1" type="date" placeholder="-ig"
+                           id="tx_to_date_filter" data-bind="value: $root.transaction_filter.to_date_str">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <label class="radio-inline">
+                <input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="and"
+                       data-bind="checked: $root.transaction_filter.bool_logic"> És
+            </label>
+            <label class="radio-inline">
+                <input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="or"
+                       data-bind="checked: $root.transaction_filter.bool_logic"> Vagy
+            </label>
+        </div>
+        <div class="row">
+            <button type="submit" class="btn btn-default" data-bind="click: $root.filter_transactions">
+                Szűrés
+            </button>
+        </div>
+    </form>
+    <button type="button" class="btn btn-primary"
+            data-bind="click: $root.addNewTransactionToTheModalWindow.bind($root)">
+        <span class="glyphicon glyphicon-plus"></span>
+    </button>
+</div>
+
+<div class="modal-body">
+    <table class="table table-bordered table-hover table-condensed">
+        <thead>
+        <tr>
+            <th class="col-md-1">
+                Forrás
+            </th>
+            <th class="col-md-1">
+                Mód
+            </th>
+            <th class="col-md-1">
+                Cél
+            </th>
+            <th class="col-md-1">
+                Összeg
+            </th>
+            <th class="col-md-3">
+                Leírás
+            </th>
+            <th class="col-md-1">
+                Dátum
+            </th>
+            <th class="col-md-1">
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- ko foreach: editing_transactions -->
+        <tr class="" data-bind="css: {'alert-danger': alert_msg() != null}">
+            <td>
+                            <span class="badge alert-danger" data-toggle="tooltip"
+                                  data-bind="visible: alert_msg() != null, attr: {title: alert_msg}">!</span>
+                <span data-bind="text: src, visible: !editing(), attr: {title: src_current_value}"></span>
+                <select class="form-control"
+                        data-bind="value: editingBackend.src, visible: editing, options: Model.valid_src_names_for_tx($data)"></select>
+            </td>
+            <td>
+                            <span class="glyphicon glyphicon-minus alert-danger"
+                                  data-bind="visible: !editing() && editingBackend.tx_type() == 0"></span>
+                            <span class="glyphicon glyphicon-plus alert-success"
+                                  data-bind="visible: !editing() && editingBackend.tx_type() == 1"></span>
+                            <span class="glyphicon glyphicon-upload"
+                                  data-bind="visible: !editing() && editingBackend.tx_type() == 2"></span>
+
+                <select class="form-control" data-bind="value: editingBackend.tx_type, visible: editing()">
+                    <option value="0">Költés</option>
+                    <option value="1">Felcimkézés</option>
+                    <option value="1">Bevétel</option>
+                    <option value="2">Rejtett Átcsoportosítás</option>
+                </select>
+            </td>
+            <td>
+                <!--<span data-bind="visible: !editing(), text: dst, attr: {title: dst_current_value}"></span>-->
+
+                <!--<input class="input-sm" type="text" data-bind="visible: editing, value: editingBackend.dst"/>-->
+
+                <span data-bind="text: dst, visible: !editing(), attr: {title: dst_current_value}"></span>
+                <select class="form-control"
+                        data-bind="value: editingBackend.dst, visible: editing, options: Model.valid_dst_names_for_tx($data)"></select>
+            </td>
+            <td>
+                <span class="pull-right" data-bind="visible: !editing(), numericText: value"></span>
+                <input class="input-sm tx_osszeg_input" type="number"
+                       data-bind="visible: editing, value: editingBackend.value"/>
+            </td>
+            <td>
+                <span data-bind="visible: !editing(), text: descr"></span>
+                <input class="input-sm" type="text"
+                       data-bind="visible: editing, value: editingBackend.descr"/>
+            </td>
+            <td>
+                <span data-bind="visible: !editing(), text: dateStr"></span>
+                <input class="input-sm" type="date"
+                       data-bind="visible: editing, value: editingBackend.dateStr"/>
+            </td>
+            <td>
+                <button type="button" class="btn btn-default"
+                        data-bind="visible: !editing(), click: beginEditing">
+                    <span class="glyphicon glyphicon-edit"></span>
+                </button>
+                <button type="button" class="btn btn-danger"
+                        data-bind="visible: !editing(), click: $root.deleteTransaction.bind($root, $data)">
+                    <span class="glyphicon glyphicon-trash"></span>
+                </button>
+                <button type="button" class="btn btn-success"
+                        data-bind="visible: editing() && is_valid(), click: commitEditing">
+                    <span class="glyphicon glyphicon-ok"></span>
+                </button>
+                <button type="button" class="btn btn-warning"
+                        data-bind="visible: editing(), click: rollbackEditing">
+                    <span class="glyphicon glyphicon-remove"></span>
+                </button>
+            </td>
+        </tr>
+        <!-- /ko -->
+        </tbody>
+    </table>
+</div>
+
+<div class="modal-footer">
+    <form class="form-horizontal" role="form">
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+
+            </div>
+        </div>
+    </form>
+</div>
+
+</div>
+</div>
+</div>
+<script>
+    $(document).ready(function () {
+        loadDataFromServerThenInitView();
+        start_interval_pinging();
+        $('[title]').tooltip();
+        $('.modal').on('show.bs.modal', function() {
+            document.activeElement.blur();
+            $(this).find(".modal-body :input:visible").first().focus();
+        });
+    });
+</script>
+
+</body>
+
+</html>

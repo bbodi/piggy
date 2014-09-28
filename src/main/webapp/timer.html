@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <link rel="icon" href="../../favicon.ico"/>
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet"/>
+    <!-- Custom styles for this template -->
+    <link href="dashboard.css" rel="stylesheet"/>
+    <!--    <script type='text/javascript' src="http://zeptojs.com/zepto.js">
+    </script>-->
+    <script type='text/javascript' src="http://code.jquery.com/jquery-2.1.1.min.js">
+    </script>
+    <script type='text/javascript' src="http://knockoutjs.com/downloads/knockout-3.1.0.js">
+    </script>
+    <script type='text/javascript' src="js/bootstrap.min.js">
+    </script>
+    <script type='text/javascript' src="locale_hu.js">
+    </script>
+    <script type='text/javascript' src="common.js">
+    </script>
+    <script type='text/javascript' src="timer.js">
+    </script>
+    <title>Dashboard Template for Bootstrap</title>
+
+</head>
+
+<body>
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar">
+
+          </span>
+          <span class="icon-bar">
+
+          </span>
+          <span class="icon-bar">
+
+          </span>
+            </button>
+            <a class="navbar-brand" href="#">Project name</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#">Dashboard</a>
+                </li>
+                <li>
+                    <a href="#">Settings</a>
+                </li>
+                <li>
+                    <a href="#">Profile</a>
+                </li>
+                <li>
+                    <a href="#">Help</a>
+                </li>
+            </ul>
+            <form class="navbar-form navbar-right">
+                <input type="text" class="form-control" placeholder="Search..."/>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+<div class="row">
+    <div class="col-sm-3 col-md-2 sidebar">
+        <ul class="nav nav-sidebar">
+            <li class="active">
+                <a href="#">Havi tervezés</a>
+            </li>
+            <li>
+                <a href="#">Pénzforgalom</a>
+            </li>
+            <li>
+                <a href="#">Analytics</a>
+            </li>
+            <li>
+                <a href="#">Export</a>
+            </li>
+        </ul>
+        <ul class="nav nav-sidebar">
+            <li>
+                <a href="">Nav item</a>
+            </li>
+            <li>
+                <a href="">Nav item again</a>
+            </li>
+            <li>
+                <a href="">One more nav</a>
+            </li>
+            <li>
+                <a href="">Another nav item</a>
+            </li>
+            <li>
+                <a href="">More navigation</a>
+            </li>
+        </ul>
+        <ul class="nav nav-sidebar">
+            <li>
+                <a href="">Nav item again</a>
+            </li>
+            <li>
+                <a href="">One more nav</a>
+            </li>
+            <li>
+                <a href="">Another nav item</a>
+            </li>
+        </ul>
+    </div>
+    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <h1 class="page-header">Dashboard</h1>
+
+        <button type="button" class="btn btn-default"
+                data-bind="click: start">
+            <span class=""></span>
+            start
+        </button>
+        <div class="table-responsive row">
+            <table class="table table-bordered table-hover table-condensed ">
+                <thead>
+                <tr>
+                    <th class="text-center"></th>
+                    <th class="text-center"></th>
+                    <th class="text-center">Megjegyzés</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- ko foreach: today().timePeriods -->
+                <tr data-bind="css: {success: type() === 'F', danger: type() === 'W'}">
+                    <td>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" data-bind="checked: $index() < $root.currentTimerPeriodIndex(), click: $root.clickPeriod.bind($root, $index())" />
+                                <span data-bind=""></span>
+                            </label>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="glyphicon glyphicon-ok" data-bind="visible: $index() < $root.currentTimerPeriodIndex()"></span>
+                        <s data-bind="text: fromTimeStr, visible: $index() < $root.currentTimerPeriodIndex()"></s>
+                        <span data-bind="text: fromTimeStr, visible: $index() >= $root.currentTimerPeriodIndex()"></span>
+                    </td>
+                    <td>
+                        <div class="progress" data-bind="visible: $data === $root.activePeriod() && $root.running(), style: $root.currentPeriodTimerPercent">
+                            <div style="min-width: 20px;" class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+                                 data-bind="style: {width: $root.currentPeriodTimerPercent}, attr: {'aria-valuenow': $root.currentPeriodTimerPercentValue}">
+                                <span data-bind="text: $root.remaindingSecs"></span>
+                            </div>
+                        </div>
+                        <span data-bind="text: $root.elapsedMinutes, visible: $data == $root.activePeriod() && $root.running()"></span>
+                        <span data-bind="text: duration, visible: $data !== $root.activePeriod() || !$root.running() "></span>
+                    </td>
+                    <td>
+                        <form data-bind="submit:addItem">
+                            Add item: <input type="text" data-bind='value: itemToAdd, valueUpdate: "afterkeydown"'/>
+                            <button type="submit" class="btn btn-default" data-bind="enable: itemToAdd().length > 0">Add</button>
+                        </form>
+                        <!-- ko foreach: items -->
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" data-bind="checked: completed" />
+                                <span data-bind="text: text, visible: !completed()"></span>
+                                <s data-bind="text: text, visible: completed"></s>
+                            </label>
+                        </div>
+                        <!-- /ko -->
+                        <!--selectedOptions:selectedItems-->
+                    </td>
+                </tr>
+                <!-- /ko -->
+                </tbody>
+            </table>
+
+
+            <!-- ============================================== -->
+            <!-- Hét választó -->
+            <!-- ============================================== -->
+            <div class="row">
+                <!-- ============================================== -->
+                <!-- JANUÁR - DECEMBER BUTTON GROUP -->
+                <!-- ============================================== -->
+                <div class="btn-group" data-toggle="buttons" data-bind="foreach: weekNames">
+                    <label class="btn btn-primary"
+                           data-bind="css: {active: $index() == $parent.selectedWeek(), 'btn-info': $index() == $parent.currentWeek()},
+               click: $parent.selectedWeek.bind($root, $index())">
+                        <input type="radio" name="options" data-bind="value: $index()">
+                <span data-bind="text: $data">
+
+                </span>
+                        </input>
+                    </label>
+                </div>
+            </div>
+            <!-- ============================================== -->
+            <!-- Napok -->
+            <!-- ============================================== -->
+            <div data-bind="foreach: days">
+                <br/>
+                <br/>
+
+                <div class="row" data-bind="foreach: $data">
+                    <div class="col-md-4">
+                        <button type="button" class="btn btn-lg btn-default" data-bind="css: {'btn-info': month() == $parentContext.$parent.currentBudgetMonth()},
+								click: $root.openTransactions">
+                            <span data-bind="text: year"></span>
+                            <span data-bind="text: month()+1"></span>
+                            <span class="glyphicon glyphicon-th-list"></span>
+                        </button>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-condensed ">
+                                <thead>
+                                <tr>
+                                    <th>
+                                        <button class="btn btn-default glyphicon glyphicon-plus"
+                                                data-bind="click: toggleNewRowVisibility"></button>
+                                    </th>
+                                    <th class="text-center">Tervezett</th>
+                                    <th class="text-center">Elköltött</th>
+                                    <th class="text-center">Mérleg</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <!-- ko foreach: budgetEntries -->
+                                <tr data-bind="css: {'alert danger': balance() < 0, 'alert warning': remainingPercent() < 25}">
+                                    <td>
+                                        <span data-bind="visible: !editing(), text: category, click: beginEditing"></span>
+                                        <input data-bind="visible: editing, value: editingBackend.category"/>
+                                    </td>
+                                    <td>
+                            <span class="pull-right"
+                                  data-bind="visible: !editing(), numericText: budgeted, click: beginEditing"></span>
+                                        <input data-bind="visible: editing, value: editingBackend.budgeted"/>
+                                    </td>
+                                    <td>
+                            <span class="pull-right"
+                                  data-bind="visible: !editing(), numericText: spent, click: beginEditing"></span>
+                                        <button class="btn btn-default" data-bind="visible: editing, click: commitEditing">Mentés
+                                        </button>
+                                    </td>
+                                    <td>
+                            <span class="pull-right"
+                                  data-bind="visible: !editing(), numericText: balance(), click: beginEditing"></span>
+                                        <button class="btn btn-default" data-bind="visible: editing, click: rollbackEditing">Mégse
+                                        </button>
+                                    </td>
+                                </tr>
+                                <!-- /ko -->
+                                <tr data-bind="visible: isNewRowVisible">
+                                    <td>
+                                        <input data-bind="value: newBudgetEntry().editingBackend.name, hasFocus: newBudgetEntry().editing"/>
+                                    </td>
+                                    <td>
+                                        <input data-bind="value: newBudgetEntry().editingBackend.budgeted"/>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-default" data-bind="click: saveNewBudgetEntry">Mentés</button>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-default" data-bind="click: toggleNewRowVisibility">Mégse</button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ============================================== -->
+            <!-- END Budgets -->
+            <!-- ============================================== -->
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        initView();
+    });
+</script>
+
+</body>
+
+</html>
