@@ -25,6 +25,7 @@ import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.postgresql.ds.PGPoolingDataSource;
 
@@ -110,8 +111,10 @@ public class Main extends HttpServlet {
 			final int id = request.getInt("persely_id");
 			delete("persely", id, username);
 		} else if ("deleteBudgetEntry".equals(request.getString("command"))) {
-			final int id = request.getInt("budget_entry_id");
-			delete("budget_entry", id, username);
+			final JSONArray ids = request.getJSONArray("removed_entry_ids");
+			for (int i = 0; i < ids.length(); i++) {
+				delete("budget_entry", ids.getInt(i), username);
+			}
 		} else if ("deleteTransaction".equals(request.getString("command"))) {
 			final int id = request.getInt("tx_id");
 			delete("money_tx", id, username);

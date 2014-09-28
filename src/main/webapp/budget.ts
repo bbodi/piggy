@@ -186,8 +186,8 @@ class BudgetEntry {
     }
 
     delete() {
-        sendData({command: "deleteBudgetEntry", budget_entry_id: this.id()});
-        Model.getBudget(this.year(), this.month()).budgetEntries.remove(this);
+        var removed_entries = Model.deleteBudgetEntries(this.budgeted_to(), this.year(), this.month());
+        sendData({command: "deleteBudgetEntry", removed_entry_ids: removed_entries.map(entry => entry.id())});
         Model.recalc();
         resizePerselyImages();
         $('#budget_entry_modal').modal('hide');
@@ -511,8 +511,8 @@ class PiggyModel {
     transaction_filter:TransactionFilter;
     there_is_editing_tx:KnockoutObservable<boolean>;
 
-    common_tx_src_for_spend_dst: KnockoutObservable<{}>;
-    common_tx_src_for_save_dst: KnockoutObservable<{}>;
+    common_tx_src_for_spend_dst:KnockoutObservable<{}>;
+    common_tx_src_for_save_dst:KnockoutObservable<{}>;
 
     editingBudgetEntry:KnockoutObservable<BudgetEntry>;
     newPersely:KnockoutObservable<Persely>;
@@ -566,7 +566,7 @@ class PiggyModel {
         this.budgetMonths = ko.computed(function () {
             var retarr = [];
             var from = this.selectedBudgetMonthNullBasedIndex();
-            var max = Math.min(from + 3, 12);
+            var max = Math.min(from + 3, 13);
             if (max - from < 3) {
                 from -= 3 - (max - from);
             }
@@ -604,6 +604,19 @@ class PiggyModel {
             retarr.push(this.places()[k].name());
         }
         return retarr;
+    }
+
+    deleteBudgetEntries(name:string, from_year:number, from_month:number): BudgetEntry[] {
+        var arr = [];
+        this.budgets().forEach(budget => {
+            var removed_elems = (budget.budgetEntries.remove(budgetEntry => {
+                return  budgetEntry.budgeted_to() == name && budgetEntry.year() >= from_year && budgetEntry.month() >= from_month;
+            }));
+            if (removed_elems.length > 0) {
+                arr.push(removed_elems[0]);
+            }
+        });
+        return arr;
     }
 
     valid_dst_names_for_tx(tx:Transaction):string[] {
@@ -1003,7 +1016,7 @@ class PiggyModel {
                     var budget = self.getBudget(tx.year(), tx.month());
                     if (budget != null) {
                         budget.available_to_budget(Number(budget.available_to_budget()) + Number(tx.value()));
-                        console.log("available_to_budget(Flagging, dst_place) += " + numberWithCommas(tx.value()) + " ==== " +  numberWithCommas(budget.available_to_budget()));
+                        console.log("available_to_budget(Flagging, dst_place) += " + numberWithCommas(tx.value()) + " ==== " + numberWithCommas(budget.available_to_budget()));
                         if (tx.tx_type() == TransactionType.Flagging) {
                             budget.income(Number(budget.income()) + Number(tx.value()));
                         }
@@ -1215,30 +1228,38 @@ function fillFromDownloadedData(data) {
     });
 
     var currentYear = new Date().getFullYear();
-    var currentMonth = new Date().getMonth() + 1;
+    var currentMonth = new Date().getMonth();
     for (var i = 0; i < 12; ++i) {
-        var currentMonthKey = currentYear + ', ' + currentMonth;
-        if (budgetsByDate[currentMonthKey] == null) {
-            var newBudget = new Budget(currentYear, currentMonth);
-            budgetsByDate[currentMonthKey] = newBudget;
-            var lastBudget = budgets[budgets.length - 1];
-            lastBudget.budgetEntries().forEach(budgetEntry => {
-                if (budgetEntry.is_allando()) {
-                    var newBudgetEntry = new BudgetEntry(0, budgetEntry.budgeted_to(), budgetEntry.budgeted(), budgetEntry.planning_type());
-                    newBudgetEntry.year(currentYear);
-                    newBudgetEntry.month(currentMonth);
-                    newBudgetEntry.is_allando(true);
-                    newBudgetEntry.persist();
-                    newBudget.budgetEntries().push(newBudgetEntry);
-                }
-            });
-            budgets.push(newBudget);
-        }
         ++currentMonth;
         if (currentMonth > 12) {
             currentMonth = 1;
             currentYear++;
         }
+        var currentMonthKey = currentYear + ', ' + currentMonth;
+        if (budgetsByDate[currentMonthKey] == null) {
+            var newBudget = new Budget(currentYear, currentMonth);
+            budgetsByDate[currentMonthKey] = newBudget;
+            budgets.push(newBudget);
+        }
+        var prevMonthKey = (currentMonth == 1 ? currentYear - 1 : currentYear) + ', ' + (currentMonth == 1 ? 12 : currentMonth - 1);
+        var prevBudget = budgetsByDate[prevMonthKey];
+        if (prevBudget == null) {
+            continue;
+        }
+        var currentBudget = budgetsByDate[currentMonthKey];
+        prevBudget.budgetEntries().forEach(budgetEntry => {
+            var sameBudgetEntryInCurrentRow = currentBudget.budgetEntries().filter((currentBudgetEntry) => {
+                return currentBudgetEntry.budgeted_to() == budgetEntry.budgeted_to();
+            });
+            if (sameBudgetEntryInCurrentRow.length == 0 && budgetEntry.is_allando()) {
+                var newBudgetEntry = new BudgetEntry(0, budgetEntry.budgeted_to(), budgetEntry.budgeted(), budgetEntry.planning_type());
+                newBudgetEntry.year(currentYear);
+                newBudgetEntry.month(currentMonth);
+                newBudgetEntry.is_allando(true);
+                newBudgetEntry.persist();
+                currentBudget.budgetEntries().push(newBudgetEntry);
+            }
+        });
     }
 
     var transactions = [];
