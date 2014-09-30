@@ -129,7 +129,9 @@
             </button>
             Hely
         </th>
-        <th class="text-center">Tervezhető</th>
+        <th class="text-center">
+            Tervezhető
+        </th>
         <th class="text-center">Összes</th>
     </tr>
     </thead>
@@ -158,7 +160,8 @@
                     class="glyphicon glyphicon-remove"></span></button>
         </td>
         <td>
-            <p class="text-right" data-bind="numericText: myValue"></p>
+            <p data-html="true" data-toggle="tooltip" data-placement="right" class="text-right" data-bind="numericText: myValue,
+            attr: {title: $root.tervezheto_tooltip_for_place($data)}"></p>
         </td>
         <td>
             <p class="text-right" data-bind="numericText: sumValue"></p>

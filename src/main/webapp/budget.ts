@@ -595,6 +595,52 @@ class PiggyModel {
         sendData({command: "logout"});
     }
 
+    tervezheto_tooltip_for_place(place: Place): string {
+        var sum = place.sumValue();
+        var perselyek = this.perselyek().filter((persely) => {
+            return persely.place().name() == place.name();
+        });
+        var result = '<div>';
+        result += ' <table>';
+        result += '     <tr>';
+        result += '         <td>';
+        result += '             <span style="color:white">Összesen:' + '</span>';
+        result += '         </td>';
+        result += '         <td class="text-right">';
+        result += '             <span style="color:green">' + numberWithCommas(sum) + '</span>';
+        result += '         </td>';
+        result += '     </tr>';
+        perselyek.forEach(persely => {
+            result += '     <tr>';
+            result += '         <td>';
+            result += '             <span style="color:white">' +persely.name()+ ':</span>';
+            result += '         </td>';
+            result += '         <td class="text-right">';
+            result += '             <span style="color:red">-' + numberWithCommas(persely.currentValue()) + '</span>';
+            result += '         </td>';
+            result += '     </tr>';
+        });
+        result += '     <tr>';
+        result += '         <td>';
+        result += '             <span style="color:white">-------------</span>';
+        result += '         </td>';
+        result += '         <td class="text-right">';
+        result += '             <span style="color:white">-------------</span>';
+        result += '         </td>';
+        result += '     </tr>';
+        result += '     <tr>';
+        result += '         <td>';
+        result += '             <span style="color:white">Jelenleg:</span>';
+        result += '         </td>';
+        result += '         <td class="text-right">';
+        result += '             <span style="color:white">' + numberWithCommas(place.myValue()) + '</span>';
+        result += '         </td>';
+        result += '     </tr>';
+        result += ' </table>';
+        result += '</div>';
+        return result;
+    }
+
     valid_src_names_for_tx(tx:Transaction):string[] {
         if (Number(tx.editingBackend.tx_type()) == TransactionType.Spending && this.getPersely(tx.editingBackend.dst()) != null) {
             return [tx.editingBackend.dst()];

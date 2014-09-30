@@ -485,6 +485,52 @@ var PiggyModel = (function () {
         sendData({ command: "logout" });
     };
 
+    PiggyModel.prototype.tervezheto_tooltip_for_place = function (place) {
+        var sum = place.sumValue();
+        var perselyek = this.perselyek().filter(function (persely) {
+            return persely.place().name() == place.name();
+        });
+        var result = '<div>';
+        result += ' <table>';
+        result += '     <tr>';
+        result += '         <td>';
+        result += '             <span style="color:white">Összesen:' + '</span>';
+        result += '         </td>';
+        result += '         <td class="text-right">';
+        result += '             <span style="color:green">' + numberWithCommas(sum) + '</span>';
+        result += '         </td>';
+        result += '     </tr>';
+        perselyek.forEach(function (persely) {
+            result += '     <tr>';
+            result += '         <td>';
+            result += '             <span style="color:white">' + persely.name() + ':</span>';
+            result += '         </td>';
+            result += '         <td class="text-right">';
+            result += '             <span style="color:red">-' + numberWithCommas(persely.currentValue()) + '</span>';
+            result += '         </td>';
+            result += '     </tr>';
+        });
+        result += '     <tr>';
+        result += '         <td>';
+        result += '             <span style="color:white">-------------</span>';
+        result += '         </td>';
+        result += '         <td class="text-right">';
+        result += '             <span style="color:white">-------------</span>';
+        result += '         </td>';
+        result += '     </tr>';
+        result += '     <tr>';
+        result += '         <td>';
+        result += '             <span style="color:white">Jelenleg:</span>';
+        result += '         </td>';
+        result += '         <td class="text-right">';
+        result += '             <span style="color:white">' + numberWithCommas(place.myValue()) + '</span>';
+        result += '         </td>';
+        result += '     </tr>';
+        result += ' </table>';
+        result += '</div>';
+        return result;
+    };
+
     PiggyModel.prototype.valid_src_names_for_tx = function (tx) {
         if (Number(tx.editingBackend.tx_type()) == 0 /* Spending */ && this.getPersely(tx.editingBackend.dst()) != null) {
             return [tx.editingBackend.dst()];
