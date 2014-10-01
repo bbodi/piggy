@@ -340,7 +340,7 @@
 <!-- ============================================== -->
 <div class="row" data-bind="foreach: budgetMonths">
     <div class="col-md-4 well">
-        <table class="table table-bordered table-hover table-condensed">
+        <table class="table table-bordered table-hover table-condensed"">
             <thead></thead>
             <tbody>
             <tr>
@@ -377,7 +377,8 @@
             </tr>
             <tr>
                 <td colspan="2">
-                    <h2>
+                    <h2 data-html="true" data-toggle="tooltip"
+                        data-bind="attr: {title: $root.tervezheto_tooltip_for_budget($data)}">
                         <!--data-bind="numericText: availableToBudget"-->
                         <p data-bind="numericText: available_to_budget" class="text-muted text-center">200</p>
                     </h2>

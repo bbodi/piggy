@@ -531,6 +531,53 @@ var PiggyModel = (function () {
         return result;
     };
 
+    PiggyModel.prototype.tervezheto_tooltip_for_budget = function (budget) {
+        var sum = budget.available_to_budget();
+        return 'oks';
+        /*var places = this.perselyek().filter((persely) => {
+        return persely.place().name() == budget.name();
+        });
+        var result = '<div>';
+        result += ' <table>';
+        result += '     <tr>';
+        result += '         <td>';
+        result += '             <span style="color:white">Összesen:' + '</span>';
+        result += '         </td>';
+        result += '         <td class="text-right">';
+        result += '             <span style="color:green">' + numberWithCommas(sum) + '</span>';
+        result += '         </td>';
+        result += '     </tr>';
+        perselyek.forEach(persely => {
+        result += '     <tr>';
+        result += '         <td>';
+        result += '             <span style="color:white">' +persely.name()+ ':</span>';
+        result += '         </td>';
+        result += '         <td class="text-right">';
+        result += '             <span style="color:red">-' + numberWithCommas(persely.currentValue()) + '</span>';
+        result += '         </td>';
+        result += '     </tr>';
+        });
+        result += '     <tr>';
+        result += '         <td>';
+        result += '             <span style="color:white">-------------</span>';
+        result += '         </td>';
+        result += '         <td class="text-right">';
+        result += '             <span style="color:white">-------------</span>';
+        result += '         </td>';
+        result += '     </tr>';
+        result += '     <tr>';
+        result += '         <td>';
+        result += '             <span style="color:white">Jelenleg:</span>';
+        result += '         </td>';
+        result += '         <td class="text-right">';
+        result += '             <span style="color:white">' + numberWithCommas(budget.myValue()) + '</span>';
+        result += '         </td>';
+        result += '     </tr>';
+        result += ' </table>';
+        result += '</div>';
+        return result;*/
+    };
+
     PiggyModel.prototype.valid_src_names_for_tx = function (tx) {
         if (Number(tx.editingBackend.tx_type()) == 0 /* Spending */ && this.getPersely(tx.editingBackend.dst()) != null) {
             return [tx.editingBackend.dst()];
@@ -954,7 +1001,7 @@ var PiggyModel = (function () {
                     var budget = self.getBudget(tx.year(), tx.month());
                     if (budget != null) {
                         budget.available_to_budget(Number(budget.available_to_budget()) + Number(tx.value()));
-                        console.log("available_to_budget(Flagging, dst_place) += " + numberWithCommas(tx.value()) + " ==== " + numberWithCommas(budget.available_to_budget()));
+                        console.log("available_to_budget(" + (tx.tx_type() === 2 /* IgnoreInBudgetFlagging */ ? 'IGNORE' : 'FLAG') + ", dst_place[" + tx.src() + " -> " + tx.dst() + "]) += " + numberWithCommas(tx.value()) + " ==== " + numberWithCommas(budget.available_to_budget()));
                         if (tx.tx_type() == 1 /* Flagging */) {
                             budget.income(Number(budget.income()) + Number(tx.value()));
                         }
